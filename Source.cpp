@@ -3,9 +3,9 @@
 
 
 using namespace std;
+const int n = 100;
 struct node {
 	int x;
-	int i = 0;
 	struct node *next;
 	struct node *prev;
 
@@ -15,8 +15,6 @@ class Linked_list {
 public:
 	Linked_list() {
 		head = tail = NULL;
-		/*head->next->prev = NULL;
-		tail->prev->next = NULL;*/
 	}
 	void insert(int x) {
 		struct node *temp = new node;
@@ -27,32 +25,11 @@ public:
 		{
 			head = temp;
 			tail = head;
-			head->i = tail->i = 0;
 		}
 		else {
-			if (head->next == NULL)
-			{
-				if (tail->prev == NULL) {
-					head->prev = temp;
-					head = temp;
-					head->i = 1;
-				}
-
-				else {
-					temp->next = head;
-					head = temp;
-					head->i = 2;
-				}
-			}
-			else {
-				temp->next = head;
-				(head->next)->prev = head;
-				temp->i = temp->next->i;
-				temp->i++;
-				head = temp;
-			//	int y = head->next->i;
-			//	head->i = y+1;
-			}
+			head->prev = temp;
+			temp->next = head;
+			head = temp;
 		}
 	}
 	void print() {
@@ -63,11 +40,8 @@ public:
 			while (temp != NULL)
 			{
 				cout << temp->x << "\t";
-				//cout << temp->i << "\t";
 				temp = temp->prev;
 			}
-			cout << head->x;
-			//cout << head->i;
 			cout << endl;
 		}
 	}
@@ -86,97 +60,40 @@ public:
 	}
 	void insert_specfic(int x, int place) {
 		struct node *temp = new node;
+		struct node *sorter = new node;
 		temp->x = x;
 		temp->next = NULL;
 		temp->prev = NULL;
-
-		if (place == head->i) {
-			this->insert(x);
-		}
-		else if (place == 0) {
-			(tail->prev)->next = tail;
-			temp->prev = tail;
-			tail = temp;
-			struct node *counter = new node;
-			counter = tail->prev;
-			while (counter != NULL)
+		sorter = tail;
+		int counter = 1;
+		while (true) {
+			if (place == 1)
 			{
-				counter->i++;
-				counter = counter->prev;
+				tail->next = temp;
+				temp->prev = tail;
+				tail = temp;
+				return;
 			}
-			head->i++;
-		}
-		else if ((head->i) - 1 == place) {
-			head->next->prev = temp;
-			temp->i = head->i;
-			head->i++;
-			temp->next = head ->next;
-			head->next = temp;
-		}
-		else if (place == 1) {
-			tail->prev->next = temp;
-			temp->prev = tail->prev;
-			tail->prev = temp;
-			temp->i = 1;
-			struct node *counter = new node;
-			counter = temp->prev;
-			while (counter != NULL)
+			else if (sorter == head && counter == place)
 			{
-				counter->i++;
-				counter = counter->prev;
+				this->insert(x);
+				return;
 			}
-			head->i++;
-
-		}
-
-		else {
-			struct node *curr = new node;
-			curr = head->next;
-			while (curr != NULL)
-			{
-				if (curr->i == place)
-				{
-					temp->i = curr->i;
-					(curr->next)->prev = temp;
-					temp->next = curr->next;
-					curr->next = temp;
-					temp->prev = curr;
-					
-
-					while (curr != NULL)
-					{
-						curr->i++;
-						curr = curr->prev;
-					}
-					head->i++;
-					break;
-				}
-				curr = curr->next;
+				
+			else if (counter == place) {
+				sorter->next->prev = temp;
+				temp->next = sorter->next;
+				sorter->next = temp;
+				temp->prev = sorter;
+				return;
 			}
+			if (sorter == head)
+				return;
+			counter++;
+			sorter = sorter->prev;
 		}
-
-
-
-
-	};
-	
-
-	void delete_row() {
-		struct node *temp = new node;
-		struct node *sort = new node;
-		temp = tail;
-		if (head != NULL) {
-			free(head);
-			while (temp != NULL)
-			{
-				sort = temp->prev;
-				free(temp);
-				temp = sort;
-			}
-			free(head);
-		}
+		cout << "Error in index" << endl;
 	}
-
 };
 int main() {
 	Linked_list My_Array[5];
@@ -186,7 +103,7 @@ int main() {
 	int type = 0;
 	while (type != 5)
 	{
-		system("cls");
+			system("cls");
 		//print
 		for (int i = 0; i < 5; i++) {
 			My_Array[i].print();
@@ -226,29 +143,29 @@ int main() {
 			break;
 		}
 		case 3:
-		{	
+		{
 			int place = 0, edit = 0;
-		cout << "How many Edit You want to Add\t";
-		cin >> edit;
-		for (int j = 0; j < edit; j++) {
-			cout << "Select A Row To Add An Element to a Specific place\t";
-			cin >> row;
-			cout << "Enter the Element\t";
-			cin >> x;
-			cout << "Enter the place of it\t";
-			cin >> place;
-			My_Array[row - 1].insert_specfic(x, place - 1);
-		}
+			cout << "How many Edit You want to Add\t";
+			cin >> edit;
+			for (int j = 0; j < edit; j++) {
+				cout << "Select A Row To Add An Element to a Specific place\t";
+				cin >> row;
+				cout << "Enter the Element\t";
+				cin >> x;
+				cout << "Enter the place of it\t";
+				cin >> place;
+						My_Array[row - 1].insert_specfic(x,  place);
+			}
 
 			break;
 		}
 		case 4:
 
 		case 5:
-			exit(-1);
+			//			exit(-1);
 		default: {
 			cout << "Error In Your Input...";
-			system("pause");
+			//			system("pause");
 			break;
 		}
 		}
@@ -258,36 +175,36 @@ int main() {
 
 
 
+	My_Array[0].insert_specfic(4, 5);
+	My_Array[0].insert_specfic(4, 6);
+	My_Array[0].insert_specfic(4, 7);
+	My_Array[0].insert_specfic(4, 8);
+	My_Array[0].insert_specfic(6, 9);
+
+	My_Array[0].insert_specfic(3, 0);
+	My_Array[0].insert_specfic(3, 0);
+	My_Array[0].insert_specfic(3, 0);
+
+	My_Array[0].insert_specfic(7, 2);
+	My_Array[0].insert_specfic(7, 2);
+	My_Array[0].insert_specfic(7, 2);
+
+	My_Array[0].insert_specfic(8, 5);
+	My_Array[0].insert_specfic(9, 5);
 
 
-	
-		/*for (int i = 0; i < 5; i++) {
-		cout << My_Array[i].search(120);
+	/*for (int i = 0; i < 5; i++) {
+	cout << My_Array[i].search(120);
 	}*/
 	cout << endl;
 
 
-	
-	
-	//My_Array[0].insert_specfic(4,5-1);
-	//My_Array[0].insert_specfic(4, 6 - 1);
-	//My_Array[0].insert_specfic(4, 7 - 1);
-	//My_Array[0].insert_specfic(4, 8 - 1);
-	//My_Array[0].insert_specfic(6, 9 -2);
 
-	//My_Array[0].insert_specfic(3, 0);
-	//My_Array[0].insert_specfic(3, 0);
-	//My_Array[0].insert_specfic(3, 0);
 
- //	My_Array[0].insert_specfic(7, 2-1);
-	//My_Array[0].insert_specfic(7, 2 - 1);
-	//My_Array[0].insert_specfic(7, 2 - 1);
 
-	//My_Array[0].insert_specfic(8, 5);
-	//My_Array[0].insert_specfic(9, 5);
 
-	
 
-	system("pause");
+
+	//	system("pause");
 	return 0;
 }
